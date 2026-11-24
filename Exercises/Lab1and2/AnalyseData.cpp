@@ -1,108 +1,61 @@
 #include <iostream>
-#include <cmath>
 #include <string>
 #include <vector>
-#include <fstream>
-#include <sstream>
+#include "CostomFunctions.h"
+
 
 //define global variables
 std::string inputfile = "input2D_float.txt";
-std::ifstream data_file;
 std::vector<std::vector<double>> data;
 std::vector<double> data_mag;
-
-
-////Functions
-int read_input(std::string inputfile){   
-    std::string line;
-
-    //assuming the input file is under the same directory
-    data_file.open(inputfile);
-
-    //raise error if unable to open
-    if (!data_file.is_open()) {
-        std::cout << "Error occurs at opening the file: " << inputfile << std::endl;
-        std::cout << "Empty input data returned!" << std::endl;
-        return -1;
-    } 
-
-    //read the file
-    std::getline(data_file, line);  //discard the first line
-    while(std::getline(data_file, line)){
-        //turn each line to a 2D double vector
-        std::stringstream ssline(line);  //convert to input stream type
-
-        std::string x, y;
-        std::getline(ssline, x, ',');
-        std::getline(ssline, y);
-
-        data.push_back({std::stod(x), std::stod(y)});
-    }
-    data_file.close();
-
-    return 0;
-}
-
-
-int print_input(std::vector<std::vector<double>> data){
-    std::string input;
-
-    std::cout << "Please enter the number of lines you'd like to print:" << std::endl;
-    std::cin >> input;
-    int N = std::stoi(input);
-
-    //check the input value
-    int length = data.size();
-    if (N<=0){
-        std::cout << "Invalid input, please enter a positive integer!" << std::endl;
-        return -1;
-    }
-    else if (N>length){
-        std::cout << "Input number larger than total number of data points!" << std::endl;
-        std::cout << "Printing data in the first 5 lines only:" << std::endl;
-        N = 5;
-    }
-    else{
-        std::cout << "Printing data in the first " << N << " lines:" << std::endl;
-    }
-
-    //print the required lines of data
-    for (int i=0; i<N; i++){
-        std::cout << data[i][0] << ", " << data[i][1] <<std::endl;
-    }
-
-    return 0;
-}
-
-
-double magnitude(double x, double y){
-    return std::sqrt(x*x + y*y);
-}
-
-
 
 
 ////Main
 int main()
 {   
     //read the data
-    if (read_input(inputfile) != 0) {
-        return -1;
-    }
+    read_input(inputfile);
 
-    //print the data
-    if (print_input(data) != 0) {
-        return -1;
-    }
+    //ask user which option they'd like
+    std::cout << "Which function would you like to use?" << std::endl;
+    std::cout << "1. Print the first N lines of data;" << std::endl;
+    std::cout << "2. Print the magnitude of every data point;" << std::endl;
+    std::cout << "3. Fit a straight line to the data using least squares method;" << std::endl;
+    std::cout << "Please choose 1, 2, or 3:" << std::endl;
+    std::string input;
+    std::cin >> input;
+    int option = std::stoi(input);
 
-    //calculate and print the magnitudes
-    // std::cout << "Magnitude of the input vectors:" << std::endl;
-    for (int i=0; i<data.size(); i++){
-        double mag = magnitude(data[i][0], data[i][1]);
-        data_mag.push_back(mag);
-        // std::cout << mag << std::endl;
+
+    switch (option){
+        case 1:{ //print the data
+            if (print_input(data) != 0) {
+                return -1;
+            }
+            break;
+        }
+
+        case 2:{ //calculate and print the magnitudes
+            std::cout << "Magnitude of the input vectors:" << std::endl;
+            for (int i=0; i<data.size(); i++){
+                double mag = magnitude(data[i][0], data[i][1]);
+                data_mag.push_back(mag);
+                std::cout << mag << std::endl; 
+            }
+            break;
+        }
+
+        case 3:{ //least square method fitting
+            std::string fit_result = fitting(inputfile);
+            std::cout << "Fit result from least square method:" << std::endl;
+            std::cout << fit_result << std::endl;
+            //print to output file
+            print_output(fit_result, "Outputs/least_square_fit.txt");
+            std::cout << "...saved to output file: Outputs/least_square_fit.txt" << std::endl;
+            break;
+        }
+
     }
-    // std::cout << "Size of output: " << data_mag.size() << std::endl;
 
     return 0;
 }

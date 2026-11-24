@@ -6,8 +6,8 @@
 #include <sstream>
 #include "CostomFunctions.h"
 
-//define functions
-int read_input(std::string inputfile){   
+
+void read_input(std::string inputfile){   
     std::string line;
 
     //assuming the input file is under the same directory
@@ -17,7 +17,7 @@ int read_input(std::string inputfile){
     if (!data_file.is_open()) {
         std::cout << "Error occurs at opening the file: " << inputfile << std::endl;
         std::cout << "Empty input data returned!" << std::endl;
-        return -1;
+        return;
     } 
 
     //read the file
@@ -34,7 +34,7 @@ int read_input(std::string inputfile){
     }
     data_file.close();
 
-    return 0;
+    return;
 }
 
 
@@ -69,6 +69,43 @@ int print_input(std::vector<std::vector<double>> data){
 }
 
 
+void print_output(std::string output, std::string path){
+    std::ofstream output_file(path);
+    output_file << output << std::endl;
+    output_file.close();
+}
+
+
 double magnitude(double x, double y){
     return std::sqrt(x*x + y*y);
+}
+
+
+std::string fitting(std::string inputfile){
+    // Fitting straight line with least squares method
+    // (can change input to 'data' but 'inputfile' is required by the assignment...)
+
+    //read the data
+    read_input(inputfile);
+
+    int N = data.size();
+    double xi_sum, yi_sum, xiyi_sum, xi2_sum;
+    
+    //calculate the sum
+    for (int i=0; i<data.size(); i++){
+        double xi = data[i][0];
+        double yi = data[i][1];
+
+        xi_sum += xi;
+        yi_sum += yi;
+        xiyi_sum += xi*yi;
+        xi2_sum += xi*xi;
+    }
+
+    //calculate the fit values
+    double p = (N * xiyi_sum - xi_sum * yi_sum) / (N * xi2_sum - xi_sum * xi_sum);
+    double q = (xi2_sum * yi_sum - xiyi_sum * xi_sum) / (N * xi2_sum - xi_sum * xi_sum);
+    std::string fit_result = "y=" + std::to_string(p) + "x+" + std::to_string(q);
+
+    return fit_result;
 }

@@ -8,7 +8,6 @@ OBJECTS=AnalyseData.o CostomFunctions.o
 ${TARGET}:${OBJECTS}
 	${CC} ${FLAGS} ${OBJECTS} -o ${TARGET}
 
-
 # Compile
 CostomFunctions.o:CostomFunctions.cpp CostomFunctions.h
 	${CC} ${FLAGS} -c CostomFunctions.cpp
