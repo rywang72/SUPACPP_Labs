@@ -1,21 +1,19 @@
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <vector>
 #include "CostomFunctions.h"
 
 
 //define global variables
-std::string inputfile = "input2D_float.txt";
+std::string inputfile_data = "input2D_float.txt";
+std::string inputfile_errors = "error2D_float.txt";
 std::vector<std::vector<double>> data;
 std::vector<double> data_mag;
 
 
 ////Main
-int main()
-{   
-    //read the data
-    read_input(inputfile);
-
+int main(){   
     //ask user which option they'd like
     std::cout << "Which function would you like to use?" << std::endl;
     std::cout << "1. Print the first N lines of data;" << std::endl;
@@ -29,11 +27,13 @@ int main()
 
     switch (option){
         case 1:{ //print the data
+            data = read_input(inputfile_data);
             print_input(data);
             break;
         }
 
         case 2:{ //calculate and print the magnitudes
+            data = read_input(inputfile_data);
             std::cout << "Magnitude of the input vectors:" << std::endl;
             for (int i=0; i<data.size(); i++){
                 double mag = magnitude(data[i][0], data[i][1]);
@@ -44,9 +44,13 @@ int main()
         }
 
         case 3:{ //least square method fitting
-            std::string fit_result = fitting(inputfile);
+            std::vector<std::string> results = fitting(inputfile_data, inputfile_errors);
+            std::ofstream clear_file("Outputs/least_square_fit.txt", std::ios::trunc);  //clear output file for this run
             std::cout << "Fit result from least square method:" << std::endl;
-            print_output(fit_result, "Outputs/least_square_fit.txt");
+            print_output(results[0], "Outputs/least_square_fit.txt");
+            std::cout << "Chi square test for y values:" << std::endl;
+            print_output(results[1], "Outputs/least_square_fit.txt");
+            // Need to change output structure
             break;
         }
 
