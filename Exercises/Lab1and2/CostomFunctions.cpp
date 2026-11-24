@@ -147,3 +147,14 @@ double chi_square_test(double p, double q, std::vector<std::vector<double>> data
     chi2 /= DOF; //divided by the degree of freedom
     return chi2;
 }
+
+
+double RecursiveMultiplier(double x, double y){
+    int count = static_cast<int>(std::round(y));  //round to nearest whole number and convert to int type
+    if (count>0){
+        return x * RecursiveMultiplier(x, count-1);
+    }
+    else if (count==0){
+        return 1.0;
+    }
+}
