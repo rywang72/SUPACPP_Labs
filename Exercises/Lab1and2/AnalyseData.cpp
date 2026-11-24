@@ -29,9 +29,7 @@ int main()
 
     switch (option){
         case 1:{ //print the data
-            if (print_input(data) != 0) {
-                return -1;
-            }
+            print_input(data);
             break;
         }
 
@@ -40,18 +38,15 @@ int main()
             for (int i=0; i<data.size(); i++){
                 double mag = magnitude(data[i][0], data[i][1]);
                 data_mag.push_back(mag);
-                std::cout << mag << std::endl; 
             }
+            print_output(data_mag, "Outputs/magnitudes.txt");
             break;
         }
 
         case 3:{ //least square method fitting
             std::string fit_result = fitting(inputfile);
             std::cout << "Fit result from least square method:" << std::endl;
-            std::cout << fit_result << std::endl;
-            //print to output file
             print_output(fit_result, "Outputs/least_square_fit.txt");
-            std::cout << "...saved to output file: Outputs/least_square_fit.txt" << std::endl;
             break;
         }
 

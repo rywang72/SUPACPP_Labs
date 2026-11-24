@@ -7,6 +7,7 @@
 #include "CostomFunctions.h"
 
 
+// Input and output
 void read_input(std::string inputfile){   
     std::string line;
 
@@ -38,7 +39,7 @@ void read_input(std::string inputfile){
 }
 
 
-int print_input(std::vector<std::vector<double>> data){
+void print_input(std::vector<std::vector<double>> data){
     std::string input;
 
     std::cout << "Please enter the number of lines you'd like to print:" << std::endl;
@@ -49,7 +50,7 @@ int print_input(std::vector<std::vector<double>> data){
     int length = data.size();
     if (N<=0){
         std::cout << "Invalid input, please enter a positive integer!" << std::endl;
-        return -1;
+        return;
     }
     else if (N>length){
         std::cout << "Input number larger than total number of data points!" << std::endl;
@@ -65,7 +66,7 @@ int print_input(std::vector<std::vector<double>> data){
         std::cout << data[i][0] << ", " << data[i][1] <<std::endl;
     }
 
-    return 0;
+    return;
 }
 
 
@@ -73,9 +74,23 @@ void print_output(std::string output, std::string path){
     std::ofstream output_file(path);
     output_file << output << std::endl;
     output_file.close();
+    std::cout << output << std::endl; //also print in terminal
+    std::cout << "...saved to output file: " << path << std::endl;
 }
 
 
+void print_output(std::vector<double> output, std::string path){
+    std::ofstream output_file(path);
+    for (int i=0; i<data.size(); i++){
+        output_file << output[i] << std::endl;
+        std::cout << output[i] << std::endl;
+    }
+    output_file.close();
+    std::cout << "...saved to output file: " << path << std::endl;
+}
+
+
+// Calulations
 double magnitude(double x, double y){
     return std::sqrt(x*x + y*y);
 }
